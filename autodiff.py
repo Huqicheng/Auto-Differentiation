@@ -106,7 +106,7 @@ class AddOp(Op):
 
     def gradient(self, node, output_grad):
         """Given gradient of add node, return gradient contributions to each input."""
-        return [output_grad, output_grad]
+        return [output_grad * node.inputs[1], output_grad * node.inputs[0]]
 
 class AddByConstOp(Op):
     """Op to element-wise add a nodes by a constant."""
