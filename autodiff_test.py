@@ -1,4 +1,4 @@
-import qnet as ad
+import autodiff as ad
 import numpy as np
 
 def test_identity():
@@ -197,3 +197,5 @@ if __name__ == "__main__":
     test_add_two_vars()
     test_mul_by_const()
     test_grad_of_grad()
+    test_matmul_two_vars()
+

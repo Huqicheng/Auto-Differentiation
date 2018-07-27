@@ -1,5 +1,5 @@
 import numpy as np
-import qnet
+import autodiff
 
 class Node(object):
     """Node in a computation graph."""
@@ -23,26 +23,59 @@ class Node(object):
     def __add__(self, other):
         """Adding two nodes return a new node."""
         if isinstance(other, Node):
-            new_node = qnet.ops.add_op(self, other)
+            new_node = autodiff.ops.add_op(self, other)
         else:
             # Add by a constant stores the constant in the new node's const_attr field.
             # 'other' argument is a constant
-            new_node = qnet.ops.add_byconst_op(self, other)
+            new_node = autodiff.ops.add_byconst_op(self, other)
+        return new_node
+
+    def __sub__(self, other):
+        """subtracting two nodes return a new node."""
+        if isinstance(other, Node):
+            new_node = autodiff.ops.sub_op(self, other)
+        else:
+            new_node = autodiff.ops.sub_byconst_op(self, other)
+        return new_node
+
+
+    def __rsub__(self, other):
+        """subtracting two nodes return a new node."""
+        if isinstance(other, Node):
+            new_node = autodiff.ops.sub_op(other, self)
+        else:
+            new_node = autodiff.ops.sub_const_node_op(self, other)
         return new_node
 
     def __mul__(self, other):
         """TODO: Your code here"""
         if isinstance(other, Node):
-            new_node = qnet.ops.mul_op(self, other)
+            new_node = autodiff.ops.mul_op(self, other)
         else:
             # Add by a constant stores the constant in the new node's const_attr field.
             # 'other' argument is a constant
-            new_node = qnet.ops.mul_byconst_op(self, other)
+            new_node = autodiff.ops.mul_byconst_op(self, other)
+        return new_node
+
+    def __truediv__(self, other):
+        if isinstance(other, Node):
+            new_node = autodiff.ops.div_op(self, other)
+        else:
+            new_node = autodiff.ops.div_byconst_op(self, other)
+        return new_node
+
+    def __rtruediv__(self, other):
+        if isinstance(other, Node):
+            new_node = autodiff.ops.div_op(other, self)
+        else:
+            new_node = autodiff.ops.div_const_node_op(other, self)
         return new_node
 
     # Allow left-hand-side add and multiply.
     __radd__ = __add__
     __rmul__ = __mul__
+    __div__ = __truediv__
+    __rdiv__ = __rtruediv__
 
     def __str__(self):
         """Allow print to display node name.""" 
@@ -55,6 +88,6 @@ def Variable(name):
     """User defined variables in an expression.  
         e.g. x = Variable(name = "x")
     """
-    placeholder_node = qnet.ops.placeholder_op()
+    placeholder_node = autodiff.ops.placeholder_op()
     placeholder_node.name = name
     return placeholder_node

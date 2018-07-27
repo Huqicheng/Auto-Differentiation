@@ -1,6 +1,6 @@
 import numpy as np
-from qnet.ops import *
-from qnet.core import *
+from autodiff.ops import *
+from autodiff.core import *
 
 class Executor:
     """Executor computes values for a given subset of nodes in a computation graph.""" 
@@ -24,13 +24,12 @@ class Executor:
         node_to_val_map = dict(feed_dict)
         # Traverse graph in topological sort order and compute values for all nodes.
         topo_order = find_topo_sort(self.eval_node_list)
-        """TODO: Your code here"""
-        # print(type(node_to_val_map.keys()[0]))
         for node in topo_order:
             if not isinstance(node.op, PlaceholderOp):
                 input_vals = []
                 for input_node in node.inputs:
                     input_vals.append(node_to_val_map[input_node])
+                # compute the output according to the op assigned to this node
                 node_to_val_map[node] = node.op.compute(node, input_vals)
 
         # Collect node values.
@@ -59,8 +58,7 @@ def gradients(output_node, node_list):
     # Traverse graph in reverse topological order given the output_node that we are taking gradient wrt.
     reverse_topo_order = reversed(find_topo_sort([output_node]))
 
-    """TODO: Your code here"""
-    """node_to_output_grads_list is a map of Node to a list of Nodes"""
+    """node_to_output_grads_list is a map of Node to a list of Nodes (aka, downstream nodes)"""
     for node in reverse_topo_order:
         # sum up the partial diffs of all output edges of node
         grad = sum_node_list(node_to_output_grads_list[node])

@@ -1,5 +1,4 @@
-from qnet.core import *
-
+from autodiff.core import *
 
 class Op(object):
     """Op represents operations performed on nodes."""
@@ -37,3 +36,5 @@ class Op(object):
         A list of gradient contributions to each input node respectively.
         """
         raise NotImplementedError
+
+
