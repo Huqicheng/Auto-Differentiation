@@ -47,15 +47,26 @@ import sys
 sys.path.append("../")
 import autodiff as ad
 
+
+# build the computation graph of the softmax regression
+
+# placeholder of input data
 x = ad.Variable(name = "x")
+
+# placeholder of parameters
 W = ad.Variable(name = "W")
 b = ad.Variable(name = "b")
+
+# placeholder of labels
 y_ = ad.Variable(name = "y_")
 
+# node of wT * x + b
 y = ad.matmul_op(x,W) + b
 
+# node of cross entropy loss
 loss = ad.softmaxcrossentropy_op(y, y_)
 
+# get all gradient nodes
 grad_W, grad_b = ad.gradients(loss, [W, b])
 
 executor = ad.Executor([loss, grad_W, grad_b])
