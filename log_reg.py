@@ -13,13 +13,12 @@ def cross_entropy(output, labels):
 	loss = -1.0 * ad.reduce_sum_op(labels * ad.log_op(output) + (1.0 - labels) * ad.log_op(1.0 - output), axis = 1)
 	return loss
 
+# Output of the hypothesis of logistic regression
 p = 1.0 / (1.0 + ad.exp_op((-1.0 * ad.matmul_op(w, x))))
-
+# Loss node
 loss = cross_entropy(p, labels)
-
+# Gradient node of loss corresponding to w
 grad_y_w, = ad.gradients(loss, [w])
-
-
 
 num_features = 2
 num_points = 200

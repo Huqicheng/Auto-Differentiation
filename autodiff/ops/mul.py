@@ -11,13 +11,11 @@ class MulOp(Op):
 
     def compute(self, node, input_vals):
         """Given values of two input nodes, return result of element-wise multiplication."""
-        """input1 * input2"""
         assert len(input_vals) == 2
         return input_vals[0] * input_vals[1]
 
     def gradient(self, node, output_grad):
         """Given gradient of multiply node, return gradient contributions to each input."""
-        """TODO: Your code here"""
         assert len(node.inputs) == 2
         return [output_grad * node.inputs[1], output_grad * node.inputs[0]]
 
@@ -32,13 +30,11 @@ class MulByConstOp(Op):
 
     def compute(self, node, input_vals):
         """Given values of input node, return result of element-wise multiplication."""
-        """TODO: Your code here"""
         assert len(input_vals) == 1
         return input_vals[0] * node.const_attr
 
     def gradient(self, node, output_grad):
         """Given gradient of multiplication node, return gradient contribution to input."""
-        """TODO: Your code here"""
         assert len(node.inputs) == 1
         return [output_grad * node.const_attr]
 
@@ -65,7 +61,6 @@ class MatMulOp(Op):
 
     def compute(self, node, input_vals):
         """Given values of input nodes, return result of matrix multiplication."""
-        """TODO: Your code here"""
         assert len(node.inputs) == 2
         if node.matmul_attr_trans_A:
             input_vals[0] = input_vals[0].T
@@ -78,7 +73,6 @@ class MatMulOp(Op):
             
         Useful formula: if Y=AB, then dA=dY B^T, dB=A^T dY
         """
-        """TODO: Your code here"""
         assert len(node.inputs) == 2
         return [matmul_op(output_grad, node.inputs[1], trans_B=True), matmul_op(node.inputs[0], output_grad, trans_A=True)]
 
