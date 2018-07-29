@@ -7,13 +7,13 @@ def compile(net, inputs, targets, loss):
     y = net.forward(inputs, training=True)
 
     # get loss
-    loss = loss.loss(y, targets)
+    loss_node = loss.loss(y, targets)
 
     # get gradient nodes
     print(net.get_all_placeholders())
-    grad_node_list = gradients(loss, net.get_all_placeholders())
+    grad_node_list = gradients(loss_node, net.get_all_placeholders())
 
-    return inputs, targets, loss, grad_node_list
+    return inputs, targets, loss_node, grad_node_list
 
 
 def train(net, inputs, targets, loss, grad_node_list,
@@ -27,16 +27,19 @@ def train(net, inputs, targets, loss, grad_node_list,
     executor = Executor(node_list)
     feed_dict = net.get_params()
     for epoch in range(num_epochs):
+        epoch_loss = 0.0
         for batch in iterator(data_x, data_y):
             feed_dict[inputs] = batch["inputs"]
             feed_dict[targets] = batch["targets"]
             grads = executor.run(feed_dict=feed_dict)
             params = net.get_params_as_list()
-            if epoch % 100 == 0:
-                print("epoch:", epoch, ", loss: ", grads[0][0])
+            epoch_loss += grads[0][0]
+            # print('\t epoch_loss:', grads[0][0])
             grads = grads[1:]
-            for i, param in enumerate(params):
-                param -= 0.2*grads[i]
+            for i, grad in enumerate(grads):
+                params[i] -= 0.2 * grad
+        if epoch % 100 == 0:
+            print("epoch:", epoch, ", loss: ", epoch_loss)
             
 
 
